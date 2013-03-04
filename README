@@ -1,0 +1,38 @@
+
+In this project, I implemented the secure file server using AES (Advanced Encryption Standard) algorithm to encrypt the messages send between the client and the server side.   This was implemented in java, with the use of the Java Cryptography Extension (JCE) which comes with the recent SDK distribution ( >= v1.4.2).  There are three components in the program. 1) ClientMain.java.  2) ServerMain.java and 3)KGenerator.java.  When the program starts, the server side first use KGenerator to generate the .sfs file in the different USER directory and then parse the value of N, E and K to that file, where K is computed by the AES algorithm from the two parameter: password (given by the user in the server side) and D.   Once the KGenerator generate the K, the server side can send the K to the client and client will use the AES inverse algorithm to compute back the D value from the server, and it will be used as the key to decrypt anything send from the server.
+
+Security Goal:
+
+The goal of the server, obviously, is to protect the password it got from the server user and, most importantly, it has to protect the number D, which will be used to encrypt the message every time it send to the clients.   Any compromise to these two files will be a big security holes for the system.  Therefore, in order to maximum the security, the password can be saved to the other machine, or better destroyed after it was used to generate the K using AES.  Then every time the client can just compute the D from this K and uses it to compute the message send to the server.  The server then takes this value and check if it is the same as the D it has sent out to the particular before.   That way can make sure that no one else can understand the communication between the clients and the server provided that only the client and the server itself know the D themselves. 
+
+In addition, since the nature of the server is multi-used, each different client is prohibited to access the other client’s directory, in order to protect the other client’s password and/or D file.  That can be done by after authenticating the clients, they are only restricted to their home directory, i.e. home/USERNAME/ .  And they are not allowed to go to the other client’s directory by default.  Therefore, keep each user directory separated from each other is our second primarily goal.
+
+Third, It could be desirable to allow only the limited number of trial of login attempts for a user.  This could prevent a brute force kind attacks and denial of service attacks to the system.  Furthermore, a login user should log out immediately after the file transfer session has finished.   It can minimize the exposure of the opportunity of the message being peeked from any other malicious people. 
+
+Last but not least, the random number used as a key to generate an encrypted message for each session should be destroyed after the session has ended.  That way can prevent malicious users from stealing the old session key and using it in any possible forms of attack attempts. 
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+How To Run:
+
+1) Compile the program by issuing this command  : javac *.java
+
+2) Run the KGenerator to generate the .sfs file : java KGenerator
+   Type the password in the screen for the generator, for example, type: cse509 is fine
+
+   (By default, there are three predefined users, i.e. rob, mary and john and we have made three subdirectories under the root directory)
+3) Run the server                               : java ServerMain
+
+4) Run the client                               : java ClientMain
+
+5) After all the initialization stuffs. next, client should enter username : rob (or mary, or john)
+   Then, it should enter the password: cse509 (in which must be matched the above cse509 password).
+
+6) Now the server will automatically send client the encrypted message. then client can request a file from server
+   eg. type : Client.java is good example (a file in the same execution directory.)
+
+7) The encrypted file will be send from the server to the client.
+
+

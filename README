@@ -1,4 +1,5 @@
 
+
 In this project, I implemented the secure file server using AES (Advanced Encryption Standard) algorithm to encrypt the messages send between the client and the server side.   This was implemented in java, with the use of the Java Cryptography Extension (JCE) which comes with the recent SDK distribution ( >= v1.4.2).  There are three components in the program. 1) ClientMain.java.  2) ServerMain.java and 3)KGenerator.java.  When the program starts, the server side first use KGenerator to generate the .sfs file in the different USER directory and then parse the value of N, E and K to that file, where K is computed by the AES algorithm from the two parameter: password (given by the user in the server side) and D.   Once the KGenerator generate the K, the server side can send the K to the client and client will use the AES inverse algorithm to compute back the D value from the server, and it will be used as the key to decrypt anything send from the server.
 
 Security Goal:
